@@ -186,14 +186,15 @@ async function agentPay({ agentOnly = false }: { agentOnly?: boolean } = {}): Pr
   const decision = evaluateSpend(policy, policyState, { amount, recipient }, Date.now());
 
   if (!decision.allowed) {
-    const friendly: Record<string, string> = {
+    const reasons: Record<string, string> = {
       [DENY.PAUSED]: "kill switch is on",
       [DENY.PER_TX_LIMIT]: `above the per-transaction limit (${policy.perTxLimit})`,
       [DENY.DAILY_LIMIT]: `would exceed today's budget (${remainingToday(policy, policyState, Date.now())} left)`,
       [DENY.NOT_ALLOWLISTED]: "recipient is not on the allowlist",
       [DENY.AMOUNT_NONPOSITIVE]: "amount must be positive",
       [DENY.EXPIRED]: "policy expired",
-    }[decision.reason as string] ?? String(decision.reason);
+    };
+    const friendly = reasons[decision.reason as string] ?? String(decision.reason);
     logLine("bad", `policy refused: ${friendly} <span class="mono">(${decision.reason})</span>`);
     refreshFacts();
     return;
