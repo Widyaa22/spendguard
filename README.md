@@ -131,7 +131,8 @@ Honest accounting, because the submission is judged on whether the MVP works:
 - [x] **Web MVP builds** — Vite bundle, 297 kB of JS, 236 modules, `node node_modules/vite/bin/vite.js build`
 - [x] **Demo runs on devnet** — `node scripts/demo.mjs`: 2 spends settled, 4 refused by policy, 1 refused by the chain
 - [x] **Live web MVP** at https://widyaa22.github.io/spendguard/
-- [ ] Demo video
+- [x] **Demo video** (2:37): https://github.com/Widyaa22/spendguard/releases/tag/v0.1.0 — a walkthrough of the live console plus the command-line run
+- [x] Typecheck in the build (`npm run typecheck`), added after two runtime bugs slipped past the bundler
 
 ## Custom program (work in progress)
 

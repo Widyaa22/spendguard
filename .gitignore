@@ -4,3 +4,6 @@ dist/
 demo-output.json
 .env
 *.env
+demo/frames/
+demo/*.mp4
+evidence/shots/

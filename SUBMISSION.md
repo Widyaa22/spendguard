@@ -73,7 +73,14 @@ so you can watch the chain itself refuse when only the agent signs. Source: http
 ## 5 · Demo Video (2–3 minutes)
 
 ```
-TODO — script below, rendered from a real devnet run.
+https://github.com/Widyaa22/spendguard/releases/download/v0.1.0/spendguard-demo.mp4
+
+2 minutes 37 seconds. It opens with the problem, then walks the live console on devnet: an approved spend of 10
+(real transaction, memo written), a refusal for exceeding the per-transaction limit, a refusal by Solana itself
+when the agent signs alone against a 2-of-2 vault, and the kill switch. The second half shows the same policy
+driven from the command line with every signature, then the on-chain addresses.
+
+Release page with the video and the raw evidence: https://github.com/Widyaa22/spendguard/releases/tag/v0.1.0
 ```
 
 ## 6 · Public GitHub Repository
