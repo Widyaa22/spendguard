@@ -20,8 +20,11 @@ ini prompt vault-nya tidak tersedia (sesi headless). Dua jalan:
   `https://colosseum.com`), lalu bilang "udah". Gue isi field password dari vault dan tekan Create account.
 
 Form email (kalau lo pilih jalur email, bukan GitHub/Google): **email, username, display name, password**.
-Tidak ada captcha di halaman itu, dan gue belum bisa memastikan apakah email verifikasi wajib — kalau jalur A
-dipakai (GitHub/Google), pertanyaan itu hilang sendiri.
+Sudah gue uji: **tidak ada jalur tanpa password** (halaman sign-in hanya punya email + password, tidak ada
+"kirim kode ke email"), dan password wajib **minimal 8 karakter** — submit tanpa password ditolak dengan pesan
+`Password must be at least 8 characters`. Jadi alur "daftar → kirim kode → lo terusan kode ke gue" memang tidak
+ada di situs ini; yang ada adalah pembuatan password, dan password itu hanya boleh masuk halaman lewat vault
+(lo yang mengetik lewat prompt masked, atau lewat `hermes vault add` dari sesi yang punya UI).
 
 ## Langkah 1 — daftar pakai link yang benar
 
