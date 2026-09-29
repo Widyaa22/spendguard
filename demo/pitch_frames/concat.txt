@@ -1,0 +1,14 @@
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/00-hook.png'
+duration 11
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/01-what.png'
+duration 15
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/02-proof-1.png'
+duration 16
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/03-proof-2.png'
+duration 20
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/04-why.png'
+duration 16
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/05-me.png'
+duration 16
+file '/home/ubuntu/recon/superteam/mvp/spendguard/demo/pitch_frames/06-close.png'
+duration 9

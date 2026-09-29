@@ -1,16 +1,23 @@
-SpendGuard — give an agent a budget, not a blank cheque.
+An agent with a wallet can pay anyone, any amount. Today the limit lives in a server that decides and then
+signs, so the limit is a promise, not a constraint.
 
-An agent with a wallet can pay anyone, any amount. Most projects enforce the limits in a server that signs, so the
-limit is a promise, not a constraint: if the agent is compromised, or that service has a bug, the rule is gone.
+So I put the budget where the money is: a vault whose authority is a 2-of-2 SPL Token multisig, the agent's key
+and a guard key. In the demo the agent builds its own payment and signs alone, and Solana refuses it, because the
+vault is 2-of-2 and the agent is only half of it.
 
-So I put the budget where the money is. The agent's funds sit behind a 2-of-2 SPL Token multisig: the agent's key
-and a guard key. The guard co-signs only when the policy allows. In the demo the agent builds its own payment and
-signs alone, and Solana rejects it — because the vault is 2-of-2 and the agent is only half of it.
+What: an on-chain spend policy for AI agents. Daily limit, per-transaction limit, recipient allowlist, kill
+switch, and every decision recorded in a Memo inside the transaction that moves the money.
 
-Live on Devnet, runs entirely in your browser: https://widyaa22.github.io/spendguard/
+Why it matters: agents are getting wallets before they get limits, and "the service said yes" does not survive a
+compromised agent or a bug in that service. Moving the budget into the vault changes the failure mode.
+
+Why me: this MVP exists as of today. 12 passing policy tests, a live console on Devnet, a public repo. I ran it
+against real Solana, it surfaced two real bugs, and I fixed them and added a typecheck to the build.
+
+Live (runs in your browser on Devnet): https://widyaa22.github.io/spendguard/
 Code: https://github.com/Widyaa22/spendguard
-Video (2:37): https://github.com/Widyaa22/spendguard/releases/tag/v0.1.0
+Video (1:50): https://github.com/Widyaa22/spendguard/releases/download/v0.1.0/spendguard-pitch.mp4
 
-Built for the @solana Road to Colosseum hackathon.
+Built for the @solana Colosseum hackathon.
 
-#Solana #AIagents #Devnet
+#Solana #Colosseum #AIagents #Devnet

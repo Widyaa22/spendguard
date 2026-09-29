@@ -181,9 +181,10 @@ card("outro", 12, "SpendGuard", [
 # ---------------------------------------------------------------- assemble
 manifest = FRAMES / "concat.txt"
 with manifest.open("w") as fh:
+    # the duration directive on the final entry is honoured (a duplicate final "file" line would make ffmpeg
+    # count the last slide twice, which pushed both videos past their length targets)
     for path, seconds in slides:
         fh.write(f"file '{path}'\nduration {seconds}\n")
-    fh.write(f"file '{slides[-1][0]}'\n")
 
 total = sum(s for _, s in slides)
 print(f"  {len(slides)} slides, {total}s total")
