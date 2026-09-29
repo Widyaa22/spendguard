@@ -1,0 +1,2 @@
+[target.sbpfv3-solana-solana]
+rustflags = ["-C", "link-arg=-zstack-size=4096"]

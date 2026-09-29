@@ -1,0 +1,31 @@
+:root{--bg:#0d1117;--panel:#161b22;--fg:#e6edf3;--dim:#8b949e;--acc:#58a6ff;--ok:#3fb950;--bad:#f85149;--warn:#d29922}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:28px 22px 18px;border-bottom:1px solid #21262d}
+h1{margin:0;font-size:26px;letter-spacing:-.4px}
+.tag{margin:6px 0 14px;color:var(--dim)}
+.wallet{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+main{display:grid;gap:16px;padding:18px;max-width:1000px;margin:0 auto}
+.card{background:var(--panel);border:1px solid #21262d;border-radius:10px;padding:18px}
+.card h2{margin:0 0 6px;font-size:17px}
+.hint{color:var(--dim);font-size:13px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--dim)}
+label.check{flex-direction:row;align-items:center;gap:8px}
+input[type=text],input[type=number]{background:#0d1117;border:1px solid #30363d;color:var(--fg);border-radius:6px;padding:9px 10px;font:inherit}
+button{background:var(--acc);border:0;color:#04121f;font-weight:600;border-radius:6px;padding:9px 14px;cursor:pointer;font:inherit}
+button.secondary{background:#21262d;color:var(--fg)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.out,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.out:empty{display:none}
+.log{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.line{padding:8px 10px;border-radius:6px;background:#0d1117;border-left:3px solid var(--dim);font-size:13.5px}
+.line.ok{border-color:var(--ok)}
+.line.bad{border-color:var(--bad)}
+.line.warn{border-color:var(--warn)}
+.line a{color:var(--acc)}
+.facts{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:0 0 12px}
+.facts dt{color:var(--dim);font-size:13px}
+.facts dd{margin:0}
+footer{padding:18px 22px 30px;color:var(--dim);font-size:12.5px;text-align:center}

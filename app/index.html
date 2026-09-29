@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SpendGuard — budget your agent can't exceed</title>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<header>
+  <h1>SpendGuard</h1>
+  <p class="tag">A budget your agent cannot exceed — enforced on Solana, not in a server log.</p>
+  <div id="wallet" class="wallet">
+    <button id="btn-wallet">Create test wallet</button>
+    <button id="btn-fund" disabled>Request devnet SOL</button>
+    <span id="wallet-info" class="mono">no wallet</span>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1 · Policy</h2>
+    <p class="hint">
+      The vault's authority is a 2-of-2 multisig: the agent's key and the guard's key. The agent can propose a
+      payment, but the SPL Token program will not move anything without the guard's signature.
+    </p>
+    <div class="grid">
+      <label>daily limit <input id="daily" type="number" value="100" min="1" /></label>
+      <label>per-transaction limit <input id="perTx" type="number" value="30" min="1" /></label>
+      <label>recipient allowlist <input id="allow" type="text" placeholder="paste recipient address, comma separated" /></label>
+      <label class="check"><input id="paused" type="checkbox" /> kill switch (paused)</label>
+    </div>
+    <button id="btn-setup">Create vault and policy</button>
+    <div id="setup-out" class="out mono"></div>
+  </section>
+
+  <section class="card">
+    <h2>2 · The agent tries to pay</h2>
+    <p class="hint">
+      Each attempt runs the policy engine first, then hits the chain. Refusals in <span class="bad">red</span> were
+      rejected by the policy; refusals in <span class="warn">amber</span> were rejected by Solana itself when only
+      the agent signed.
+    </p>
+    <div class="grid">
+      <label>recipient <input id="to" type="text" placeholder="recipient address" /></label>
+      <label>amount <input id="amt" type="number" value="10" min="1" /></label>
+    </div>
+    <div class="row">
+      <button id="btn-pay">Agent pays (both keys)</button>
+      <button id="btn-pay-agentonly" class="secondary">Agent pays, agent key only</button>
+      <button id="btn-pause" class="secondary">Toggle kill switch</button>
+    </div>
+    <div id="log" class="log"></div>
+  </section>
+
+  <section class="card">
+    <h2>3 · What is on chain</h2>
+    <dl class="facts">
+      <dt>vault</dt><dd id="f-vault" class="mono">—</dd>
+      <dt>policy</dt><dd id="f-policy" class="mono">—</dd>
+      <dt>spent today</dt><dd id="f-spent">0</dd>
+      <dt>remaining today</dt><dd id="f-remain">—</dd>
+    </dl>
+    <p class="hint">
+      Every approved spend also writes a Memo instruction, so the audit trail is produced by the same transaction
+      that moved the money rather than by the service that decided.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <span>devnet only · no real funds</span>
+</footer>
+
+<script type="module" src="./src/main.ts"></script>
+</body>
+</html>
