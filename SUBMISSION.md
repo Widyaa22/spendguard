@@ -63,9 +63,11 @@ the rest of the ecosystem, which is also why it is cheap to verify.
 ## 4 · Live MVP / Test Link
 
 ```
-TODO — deployed web console (GitHub Pages). It runs entirely in the browser against devnet: create a throwaway
-wallet, fund it, create the vault, then let the agent try to pay and watch the chain refuse when only the agent
-signs.
+https://widyaa22.github.io/spendguard/
+
+The console runs entirely in the browser against devnet, with no backend of ours in the path: it creates a
+throwaway wallet, requests devnet SOL, creates the vault behind a 2-of-2 multisig, then lets the agent try to pay
+so you can watch the chain itself refuse when only the agent signs. Source: https://github.com/Widyaa22/spendguard
 ```
 
 ## 5 · Demo Video (2–3 minutes)
@@ -77,20 +79,36 @@ TODO — script below, rendered from a real devnet run.
 ## 6 · Public GitHub Repository
 
 ```
-TODO — github.com/<account>/spendguard (public, README with setup and run instructions)
+https://github.com/Widyaa22/spendguard
+
+Public, MIT licensed, with the README carrying setup and run instructions.
 ```
 
 ## 7 · Deployment Details
 
 ```
 Cluster: Devnet
-Vault authority: SPL Token 2-of-2 multisig (agent key + guard key)
+Web console (live): https://widyaa22.github.io/spendguard/  ([repo](https://github.com/Widyaa22/spendguard))
+Vault authority: SPL Token 2-of-2 multisig BUuFED3zGAqNydBdGLdKdzsPaVkbtLaSZwCZM3PfDMzu
+  members: agent A9osRpNbv4MQg2XbyL7xYgg7yxSk5f2y8XyHnz4VQBq6 | guard BruEAE1PRScE2y97zg6FgpDVTMZHnipirqA8xSjS5muU
+Vault token account: 6ZpFuyukWdpbXgQoNKsVxtHpLmjtwuEtNVRXRZ5PBNkR
+Test mint: 9DrdeQ78WzMSsM1uGFd3yu9jD1QHyebg6PJYXCPK7ucB  (agent's ATA A9osRpNbv4MQg2XbyL7xYgg7yxSk5f2y8XyHnz4VQBq6, vendor ATA 72iB4icHCswt9w4S2WRreX1jcGP3DWvgmWLFypFggS6A)
 Programs used: SPL Token (TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA), Memo (MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr)
-Test mint / vault / spend signatures: TODO from the demo run (demo-output.json)
-Note: a native Rust program implementing the policy directly on-chain is in program/ and compiles for the SBF
-target, but its full build is blocked by the SBF toolchain's bundled cargo being older than the edition2024
-manifests of modern transitive dependencies. The shipped MVP deliberately does not depend on it — SPL Token's
-multisig enforces the same boundary today, which is the honest trade for a working MVP inside the deadline.
+Policy: daily 50, per-transaction 30, allowlist = the vendor's token account only
+Run: 7 attempts -> 2 settled, 4 refused by policy, 1 refused by the chain
+* `spend 20 to allowlisted vendor` -> settled
+  https://explorer.solana.com/tx/2q582p9Hs6SsFZ2ess83LjV7TZQ4tvnKb51HMqpL6h43kUx4sUrXzXpNGLv5nheeQrqC7EXVDxnuyQXLo3Z3jNym?cluster=devnet
+* `spend 31 (per-tx limit 30)` -> refused by policy (per_tx_limit_exceeded)
+* `spend 5 to a non-allowlisted vendor` -> refused by policy (recipient_not_allowlisted)
+* `agent signs alone (no guard)` -> refused by the chain: MissingRequiredSignature — vault is 2-of-2, agent signed alone
+* `spend 30 (takes today to the limit)` -> settled
+  https://explorer.solana.com/tx/J5D2XbBWPui93Q8cA2TtPY1qGo2Lzq2VowLdtyLY8f5znNojfAxFs585vjYgNjdMBZzYyztw99LVg9WFVv23GsN?cluster=devnet
+* `spend 10 more (daily budget used up)` -> refused by policy (daily_limit_exceeded)
+* `spend 1 while paused` -> refused by policy (policy_paused)
+Note: a native Rust program implementing the policy on-chain is in program/ and compiles for the SBF target, but its
+full build is blocked by the SBF toolchain's bundled cargo predating the edition2024 manifests of modern
+transitive dependencies. The shipped MVP deliberately does not depend on it: SPL Token's multisig enforces the
+same boundary today, which is the honest trade for a working MVP inside the deadline.
 ```
 
 ---

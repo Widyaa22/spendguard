@@ -2,7 +2,9 @@
 
 **Tagline:** give an agent a budget, not a blank cheque.
 
-**Live MVP:** _pending deployment — see "Status" at the bottom for exactly what is done and what is not._
+**Live MVP:** https://widyaa22.github.io/spendguard/ — runs entirely in your browser against devnet, no backend of ours in the path.
+
+**Devnet evidence:** the demo run below is real; every signature is on chain.
 
 ---
 
@@ -54,7 +56,7 @@ because the second signature is missing.
 src/policy.mjs              the policy engine — pure, deterministic, and the decision the guard actually makes
 tests/policy.test.mjs       12 tests: every rule that can deny a spend, plus the daily reset and no-mutation case
 scripts/deploy-devnet.mjs   deploys the compiled program to devnet without the Solana CLI (see "custom program")
-scripts/demo-devnet.mjs     the end-to-end demo: creates the vault, funds it, then runs allowed and refused spends
+scripts/demo.mjs            the end-to-end demo: creates the vault behind a 2-of-2 multisig, funds it, then runs allowed and refused spends
 program/                    Rust program (work in progress — see the status section)
 app/                        the live web MVP
 ```
@@ -94,19 +96,19 @@ npm test                  # prove the policy holds
 node scripts/deploy-devnet.mjs
 
 # 2. run the end-to-end demo (allowed spend, then each refusal, with signatures)
-node scripts/demo-devnet.mjs
+node scripts/demo.mjs
 ```
 
 The demo prints an explorer link for every attempt, and writes `demo-output.json` with the full evidence:
 
 ```
-spend 20 within limits            OK        <signature>
-spend 31 (per-tx limit 30)        REFUSED   PerTxLimitExceeded
-spend 5 to unknown vendor         REFUSED   RecipientNotAllowlisted
-spend 50 (28 left today)          REFUSED   DailyLimitExceeded
-spend 28 (exact remainder)        OK        <signature>
-spend 1 more (daily used up)      REFUSED   DailyLimitExceeded
-spend 1 while paused              REFUSED   PolicyPaused
+spend 20 to allowlisted vendor         OK  tx 2q582p9Hs6SsFZ2ess83LjV7TZQ4tvnKb51HMqpL6
+spend 31 (per-tx limit 30)             POLICY REFUSED  per_tx_limit_exceeded
+spend 5 to a non-allowlisted vendor    POLICY REFUSED  recipient_not_allowlisted
+agent signs alone (no guard)           CHAIN REFUSED  MissingRequiredSignature — vault is 2-of-2, 
+spend 30 (takes today to the limit)    OK  tx J5D2XbBWPui93Q8cA2TtPY1qGo2Lzq2VowLdtyLY8
+spend 10 more (daily budget used up)   POLICY REFUSED  daily_limit_exceeded
+spend 1 while paused                   POLICY REFUSED  policy_paused
 ```
 
 ## Security model, stated plainly
@@ -127,9 +129,8 @@ Honest accounting, because the submission is judged on whether the MVP works:
 - [x] Devnet plumbing (vault creation, multisig authority, Memo audit trail, spend/refuse orchestration)
 - [x] Program build toolchain established on ARM64 (SBF compiler verified working)
 - [x] **Web MVP builds** — Vite bundle, 297 kB of JS, 236 modules, `node node_modules/vite/bin/vite.js build`
-- [ ] **Running demo on devnet** — blocked on devnet SOL: the public faucet returns HTTP 429 for this host's IP.
-      One funded address unblocks it: `DHUQomk4ak9M7pS5e5V94aVDbbfRZaK6xHPnSDK5zgP4` via https://faucet.solana.com
-- [ ] Hosting the web MVP at a public test link
+- [x] **Demo runs on devnet** — `node scripts/demo.mjs`: 2 spends settled, 4 refused by policy, 1 refused by the chain
+- [x] **Live web MVP** at https://widyaa22.github.io/spendguard/
 - [ ] Demo video
 
 ## Custom program (work in progress)
