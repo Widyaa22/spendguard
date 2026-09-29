@@ -82,10 +82,40 @@ const store = {
 let S: Session | null = store.load();
 let policyState: any = initState(Date.now());
 
+const BADGE_LABEL: Record<string, string> = {
+  ok: "approved",
+  bad: "policy refused",
+  warn: "chain refused",
+  info: "info",
+};
+
 function logLine(kind: string, text: string, sig?: string): void {
+  const empty = document.getElementById("log-empty");
+  if (empty) empty.style.display = "none";
+
   const node = document.createElement("div");
   node.className = `line ${kind}`;
-  node.innerHTML = `${text}${sig ? ` — <a href="${explorer(sig)}" target="_blank" rel="noopener">${short(sig)}</a>` : ""}`;
+
+  const badge = document.createElement("span");
+  badge.className = `badge ${kind}`;
+  badge.textContent = BADGE_LABEL[kind] ?? kind;
+  node.append(badge);
+
+  const body = document.createElement("span");
+  body.className = "msg";
+  body.innerHTML = text;
+  node.append(body);
+
+  if (sig) {
+    const link = document.createElement("a");
+    link.className = "sig";
+    link.href = explorer(sig);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = short(sig);
+    node.append(link);
+  }
+
   el("log").prepend(node);
 }
 
@@ -108,9 +138,21 @@ function refreshFacts(): void {
   el("f-vault").textContent = S.vault ? short(S.vault) : "—";
   el("f-policy").textContent = S.multisig ? short(S.multisig) : "—";
   const policy = readPolicy();
-  el("f-spent").textContent = String(policyState.spentToday);
+  const spent = Number(policyState.spentToday) || 0;
+  el("f-spent").textContent = String(spent);
   el("f-remain").textContent = String(remainingToday(policy, policyState, Date.now()));
   if (S.vault) input("to").placeholder = S.vault;
+
+  // the budget bar is the one piece of state a viewer can read at a glance
+  const daily = Number(policy.dailyLimit) || 1;
+  const pct = Math.max(0, Math.min(100, Math.round((spent / daily) * 100)));
+  const bar = document.getElementById("budget-bar");
+  if (bar) {
+    bar.style.width = `${pct}%`;
+    bar.dataset.state = pct >= 100 ? "full" : pct >= 80 ? "warn" : "ok";
+  }
+  const label = document.getElementById("budget-label");
+  if (label) label.textContent = `${pct}% used`;
 }
 
 async function fundWallet(): Promise<boolean> {
@@ -195,7 +237,7 @@ async function agentPay({ agentOnly = false }: { agentOnly?: boolean } = {}): Pr
       [DENY.EXPIRED]: "policy expired",
     };
     const friendly = reasons[decision.reason as string] ?? String(decision.reason);
-    logLine("bad", `policy refused: ${friendly} <span class="mono">(${decision.reason})</span>`);
+    logLine("bad", `${friendly} <span class="why">${decision.reason}</span>`);
     refreshFacts();
     return;
   }

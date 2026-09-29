@@ -3,74 +3,132 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SpendGuard — budget your agent can't exceed</title>
-  <script type="module" crossorigin src="./assets/index-Bp5i9zM9.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BWBEYmKY.css">
+<title>SpendGuard — a budget your agent cannot exceed</title>
+<meta name="description" content="An on-chain spend policy for AI agents on Solana: the vault is owned by a 2-of-2 SPL Token multisig, so the chain refuses any payment the guard did not co-sign." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='14' width='52' height='36' rx='9' fill='%23111823' stroke='%2358a6ff' stroke-width='3'/%3E%3Crect x='15' y='29' width='34' height='7' rx='3.5' fill='%2316202e'/%3E%3Crect x='15' y='29' width='22' height='7' rx='3.5' fill='%2358a6ff'/%3E%3Crect x='47' y='24' width='5' height='17' fill='%23f85149'/%3E%3C/svg%3E" />
+  <script type="module" crossorigin src="./assets/index-DoA4h2Rl.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CyjgPjYm.css">
 </head>
 <body>
-<header>
-  <h1>SpendGuard</h1>
-  <p class="tag">A budget your agent cannot exceed — enforced on Solana, not in a server log.</p>
-  <div id="wallet" class="wallet">
-    <button id="btn-wallet">Create test wallet</button>
-    <button id="btn-fund" disabled>Request devnet SOL</button>
-    <span id="wallet-info" class="mono">no wallet</span>
+
+<header class="top">
+  <div class="brand">
+    <svg width="38" height="38" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="6" y="14" width="52" height="36" rx="9" fill="#111823" stroke="#58a6ff" stroke-width="3"/>
+      <rect x="15" y="29" width="34" height="7" rx="3.5" fill="#16202e"/>
+      <rect x="15" y="29" width="22" height="7" rx="3.5" fill="#58a6ff"/>
+      <rect x="47" y="24" width="5" height="17" fill="#f85149"/>
+    </svg>
+    <div>
+      <h1>SpendGuard</h1>
+      <div class="sub">spend policy for AI agents, on Solana</div>
+    </div>
+  </div>
+  <div class="chips">
+    <span class="chip live" id="net-chip"><span class="dot"></span> devnet</span>
+    <span class="chip" id="wallet-info">no wallet yet</span>
+    <button class="btn ghost" id="btn-wallet">Create test wallet</button>
+    <button class="btn primary" id="btn-fund" disabled>Request devnet SOL</button>
   </div>
 </header>
 
+<section class="hero">
+  <h2>A budget your agent cannot exceed.</h2>
+  <p>
+    The vault's authority is a <span class="accent">2-of-2 SPL Token multisig</span>: your agent holds one key, the
+    guard holds the other. A payment needs both signatures, so the chain itself refuses anything the guard did not
+    co-sign. Policy: daily limit, per-transaction limit, recipient allowlist, kill switch. Every decision is recorded
+    in a Memo instruction inside the transaction that moves the money.
+  </p>
+</section>
+
 <main>
-  <section class="card">
-    <h2>1 · Policy</h2>
-    <p class="hint">
-      The vault's authority is a 2-of-2 multisig: the agent's key and the guard's key. The agent can propose a
-      payment, but the SPL Token program will not move anything without the guard's signature.
-    </p>
-    <div class="grid">
-      <label>daily limit <input id="daily" type="number" value="100" min="1" /></label>
-      <label>per-transaction limit <input id="perTx" type="number" value="30" min="1" /></label>
-      <label>recipient allowlist <input id="allow" type="text" placeholder="paste recipient address, comma separated" /></label>
-      <label class="check"><input id="paused" type="checkbox" /> kill switch (paused)</label>
-    </div>
-    <button id="btn-setup">Create vault and policy</button>
-    <div id="setup-out" class="out mono"></div>
-  </section>
+  <div class="col">
 
-  <section class="card">
-    <h2>2 · The agent tries to pay</h2>
-    <p class="hint">
-      Each attempt runs the policy engine first, then hits the chain. Refusals in <span class="bad">red</span> were
-      rejected by the policy; refusals in <span class="warn">amber</span> were rejected by Solana itself when only
-      the agent signed.
-    </p>
-    <div class="grid">
-      <label>recipient <input id="to" type="text" placeholder="recipient address" /></label>
-      <label>amount <input id="amt" type="number" value="10" min="1" /></label>
-    </div>
-    <div class="row">
-      <button id="btn-pay">Agent pays (both keys)</button>
-      <button id="btn-pay-agentonly" class="secondary">Agent pays, agent key only</button>
-      <button id="btn-pause" class="secondary">Toggle kill switch</button>
-    </div>
-    <div id="log" class="log"></div>
-  </section>
+    <section class="card">
+      <header><span class="step">1</span><h3>Create the vault and the policy</h3></header>
+      <p class="hint">
+        Creating the vault also creates the multisig that owns it, so <b>neither key can move funds alone</b>, including
+        the agent's.
+      </p>
+      <div class="grid-2">
+        <div class="field">
+          <label for="daily">Daily limit <span class="unit">(tokens)</span></label>
+          <input id="daily" type="number" value="100" min="1" />
+        </div>
+        <div class="field">
+          <label for="perTx">Per transaction <span class="unit">(tokens)</span></label>
+          <input id="perTx" type="number" value="30" min="1" />
+        </div>
+        <div class="field" style="grid-column: 1 / -1;">
+          <label for="allow">Recipient allowlist <span class="unit">(token accounts, comma separated)</span></label>
+          <input id="allow" type="text" placeholder="paste a devnet token account" />
+        </div>
+        <div class="field">
+          <label class="check"><input id="paused" type="checkbox" /> kill switch (paused)</label>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="btn-setup">Create vault and policy</button>
+      </div>
+      <div id="setup-out" class="mono" style="margin-top:10px;color:var(--fg-dim)"></div>
+    </section>
 
-  <section class="card">
-    <h2>3 · What is on chain</h2>
-    <dl class="facts">
-      <dt>vault</dt><dd id="f-vault" class="mono">—</dd>
-      <dt>policy</dt><dd id="f-policy" class="mono">—</dd>
-      <dt>spent today</dt><dd id="f-spent">0</dd>
-      <dt>remaining today</dt><dd id="f-remain">—</dd>
-    </dl>
-    <p class="hint">
-      Every approved spend also writes a Memo instruction, so the audit trail is produced by the same transaction
-      that moved the money rather than by the service that decided.
-    </p>
-  </section>
+    <section class="card">
+      <header><span class="step">2</span><h3>The agent tries to pay</h3></header>
+      <p class="hint">
+        The policy runs first, then the chain. A <b>red</b> refusal is the policy declining. An <b>amber</b> refusal is
+        Solana rejecting the transaction because only the agent signed.
+      </p>
+      <div class="grid-2">
+        <div class="field" style="grid-column: 1 / -1;">
+          <label for="to">Recipient token account</label>
+          <input id="to" type="text" placeholder="paste a devnet token account" />
+        </div>
+        <div class="field">
+          <label for="amt">Amount <span class="unit">(tokens)</span></label>
+          <input id="amt" type="number" value="10" min="1" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="btn-pay">Agent pays</button>
+        <button class="btn ghost" id="btn-pay-agentonly">Agent pays, agent key only</button>
+        <button class="btn warn" id="btn-pause">Toggle kill switch</button>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="col">
+
+    <section class="card">
+      <header><h3>On-chain state</h3></header>
+      <p class="hint">The vault and its authority are real devnet accounts.</p>
+      <div class="stats">
+        <div class="stat"><span class="k">vault token account</span><span class="v mono" id="f-vault">—</span></div>
+        <div class="stat"><span class="k">authority, 2-of-2 multisig</span><span class="v mono" id="f-policy">—</span></div>
+        <div class="stat"><span class="k">spent today</span><span class="v big" id="f-spent">0</span></div>
+        <div class="stat"><span class="k">remaining today</span><span class="v big" id="f-remain">—</span></div>
+      </div>
+      <div class="budget">
+        <div class="legend"><span>today's budget</span><span id="budget-label">0% used</span></div>
+        <div class="track"><div id="budget-bar"></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <header><h3>Event feed</h3></header>
+      <p class="hint">Every decision this session, with its reason and its transaction.</p>
+      <div class="feed" id="log" aria-live="polite" role="log"></div>
+      <div class="empty" id="log-empty">Nothing yet. Create a vault, then let the agent try to pay.</div>
+    </section>
+
+  </div>
 </main>
 
 <footer>
-  <span>devnet only · no real funds</span>
+  devnet only, no real funds · <a href="https://github.com/Widyaa22/spendguard" target="_blank" rel="noopener">source</a> ·
+  <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" rel="noopener">explorer</a>
 </footer>
 
 </body>
