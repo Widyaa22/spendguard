@@ -7,3 +7,7 @@ demo-output.json
 demo/frames/
 demo/*.mp4
 evidence/shots/
+demo/screen_frames/
+demo/pitch_frames/
+evidence/screencast/
+demo/spendguard-live.mp4
