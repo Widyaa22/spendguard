@@ -8,6 +8,13 @@
  * The policy engine imported here is the same file the tests exercise (src/policy.mjs), so the rules in the UI
  * are the rules under test, not a re-implementation.
  */
+import { Buffer } from "buffer";
+
+// web3.js and spl-token assume Node's Buffer. Browsers do not have it, so without this shim the app fails with
+// "Buffer is not defined" the moment it tries to build a transaction (found by running it on devnet).
+if (!(globalThis as any).Buffer) (globalThis as any).Buffer = Buffer;
+if (!(globalThis as any).process) (globalThis as any).process = { env: {}, version: "" } as any;
+
 import {
   Connection, Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction, LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
