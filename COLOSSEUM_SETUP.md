@@ -36,7 +36,28 @@ https://arena.colosseum.org/?ref=germany
 
 Daftar → lalu di profil/pengaturan, pastikan **country = Germany**. Ini syarat eksplisit listing MVP.
 
-## Langkah 2 — bikin project page, tempel isian ini
+## Langkah 2 — JOIN hackathon dulu (ini yang bikin portal project muncul)
+
+Gue cek FAQ resmi di `colosseum.com/hackathon`, dan urutannya bukan "create project":
+
+> *"Do I need to register first before submitting a product? **Yes. Sign up for a Colosseum account and join the
+> currently running hackathon.** If you are part of a team, every team member must create an account, and the
+> team leader must add them during the product-submission process. **The product-submission portal is available
+> from the platform dashboard after you join the competition.** To be eligible for prizes and Accelerator
+> consideration, team leaders must complete the submission before the deadline. Only one product submission is
+> allowed per team—and therefore one per individual."*
+
+Jadi:
+
+1. Buka `https://colosseum.com/hackathon`
+2. Klik **Join now** pada hackathon yang sedang live (**Crypto World's Fair**, 14 Sep — 12 Okt)
+3. Setelah join, **product-submission portal muncul di dashboard** — di situlah project page dibuat
+4. Isi submission-nya dengan isian di bawah
+
+Catatan: project URL tidak bisa dibaca dari luar (halaman project butuh login; `/projects` redirect ke `/signup`),
+jadi URL-nya baru bisa disalin setelah submission-nya dibuat.
+
+## Langkah 3 — isi project page / product submission
 
 Isian di bawah sudah disesuaikan dengan proyeknya (semua link sudah gue verifikasi hidup):
 
@@ -104,7 +125,7 @@ Solana (devnet). SPL Token 2-of-2 multisig as the vault authority, Memo program 
 program deployed. Policy engine is a pure module with 12 tests; the console is a browser app against devnet.
 ```
 
-## Langkah 3 — kirim gue URL project page-nya
+## Langkah 4 — kirim gue URL project page-nya
 
 Setelah project page jadi, salin URL-nya (bentuknya seperti `https://colosseum.com/...` atau
 `https://arena.colosseum.org/projects/<slug>` — gue belum bisa memastikan tanpa akun). URL itu yang masuk ke
