@@ -90,13 +90,15 @@ Two properties worth calling out because they are the ones that usually bite:
 ```bash
 node --version            # 22+ required
 npm install               # @solana/web3.js + @solana/spl-token
-npm test                  # prove the policy holds
+npm test                  # 12 policy tests
+npm run typecheck         # the console is typechecked too, after two bugs slipped past the bundler
 
-# 1. fund a devnet keypair (the script generates ~/.config/spendguard/id.json and prints the address)
-node scripts/deploy-devnet.mjs
-
-# 2. run the end-to-end demo (allowed spend, then each refusal, with signatures)
-node scripts/demo.mjs
+# create a devnet keypair, fund it from https://faucet.solana.com, then run everything end to end:
+node -e 'const {Keypair}=require("@solana/web3.js");const fs=require("fs"),os=require("os"),p=require("path");'\
+'const d=p.join(os.homedir(),".config","spendguard");fs.mkdirSync(d,{recursive:true});'\
+'const k=Keypair.generate();fs.writeFileSync(p.join(d,"id.json"),JSON.stringify([...k.secretKey]));'\
+'console.log("fund this address with devnet SOL:",k.publicKey.toBase58())'
+node scripts/demo.mjs     # allowed spend, then every refusal, each with its signature
 ```
 
 The demo prints an explorer link for every attempt, and writes `demo-output.json` with the full evidence:

@@ -1,0 +1,16 @@
+SpendGuard — give an agent a budget, not a blank cheque.
+
+An agent with a wallet can pay anyone, any amount. Most projects enforce the limits in a server that signs, so the
+limit is a promise, not a constraint: if the agent is compromised, or that service has a bug, the rule is gone.
+
+So I put the budget where the money is. The agent's funds sit behind a 2-of-2 SPL Token multisig: the agent's key
+and a guard key. The guard co-signs only when the policy allows. In the demo the agent builds its own payment and
+signs alone, and Solana rejects it — because the vault is 2-of-2 and the agent is only half of it.
+
+Live on Devnet, runs entirely in your browser: https://widyaa22.github.io/spendguard/
+Code: https://github.com/Widyaa22/spendguard
+Video (2:37): https://github.com/Widyaa22/spendguard/releases/tag/v0.1.0
+
+Built for the @solana Road to Colosseum hackathon.
+
+#Solana #AIagents #Devnet
